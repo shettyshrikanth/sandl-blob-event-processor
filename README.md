@@ -1,10 +1,10 @@
 # sandl-blob-event-processor
 * Checkout the project
-* Build project : mvn clean install prepare-package
-* Deploy project : mvn azure-functions:deploy
+* Build project : `mvn clean install prepare-package`
+* Deploy project : `mvn azure-functions:deploy`
 
 * Open the functionApp `sandlblobeventprocessor` in azure web portal
-* Click on 'Handlesandlblobevent' function
+* Click on `Handlesandlblobevent` function
 * Open the log console
 
 * Open the `sandlstorage` storage account on storage explorer (in separate browser window)
