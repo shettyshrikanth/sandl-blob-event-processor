@@ -1,5 +1,10 @@
 # sandl-blob-event-processor
 Checkout the project
+
+az login
+az account set --subscription subscription id
+Install azure core functions
+Update .net framework to latest version
 Build project : mvn clean install prepare-package
 Deploy project : mvn azure-functions:deploy
 
