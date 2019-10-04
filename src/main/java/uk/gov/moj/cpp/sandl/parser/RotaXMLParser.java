@@ -2,20 +2,15 @@ package uk.gov.moj.cpp.sandl.parser;
 
 import static java.util.UUID.randomUUID;
 import static javax.xml.stream.XMLInputFactory.newInstance;
-import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.apache.commons.lang3.StringUtils.removeEnd;
-import static uk.gov.moj.cpp.sandl.parser.util.PropertiesUtil.xmlProperties;
+import static uk.gov.moj.cpp.sandl.parser.util.PropertiesLoader.xmlProperties;
 
-import uk.gov.moj.cpp.sandl.enricher.Enricher;
 import uk.gov.moj.cpp.sandl.parser.util.RotaPayload;
-import uk.gov.moj.cpp.sandl.persistence.entity.CourtSchedule;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;

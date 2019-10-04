@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class PropertiesUtil {
+public class PropertiesLoader {
 
     public static final Map<String, String> xmlProperties = loadXmlProperties();
 
