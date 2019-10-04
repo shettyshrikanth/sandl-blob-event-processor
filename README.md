@@ -11,8 +11,7 @@ The `pom.xml` dependencies : -
 * Azure-functions-java-library
 * Azure-storage (8.4.0)
 * Hibernate-core (5.2.3)
-* Jackson-datatype-jsr310 (2.9.0)
-* Jackson-databind (2.9.0)
+* mssql-jdbc (6.1.0-jre8)
 * Commons-lang3 (3.9)
 * commons-io (2.6)
 
