@@ -2,7 +2,7 @@ Maven project for evaluating Azure functions and Blob triggers
 =================================================================
 
 # Introduction
-Reads blobs created in sandlblobcontainer, parse the xml, enrich it and save it to the sandldb (using hibernate ORM)
+Read blobs created in sandlblobcontainer, parse the xml, enrich it and save it to the sandldb (using hibernate ORM)
 
 # Details
 
@@ -20,6 +20,7 @@ The `pom.xml` dependencies : -
 
  * Build project : `mvn clean install prepare-package`
  * Deploy project : `mvn azure-functions:deploy` (you need to login before you run this command)
+ * Add new function : `mvn azure-functions:run`
 
 # Login to Azure portal
 
@@ -36,6 +37,6 @@ The `pom.xml` dependencies : -
 * Update the .net framework to latest version
 
 # Azure cli commands
-* login : az login
-* set correct subscription : az account set --subscription <subscription id>
-* list subscriptions - az account list
+* login : `az login`
+* set correct subscription : `az account set --subscription <subscription id>`
+* list subscriptions - `az account list`
