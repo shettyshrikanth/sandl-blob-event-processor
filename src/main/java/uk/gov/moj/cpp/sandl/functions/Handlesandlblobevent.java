@@ -2,9 +2,6 @@ package uk.gov.moj.cpp.sandl.functions;
 
 import static java.lang.System.getenv;
 
-import static uk.gov.moj.cpp.sandl.util.ApiRestEndpoint.TIMELINESS_SJP_CASE_PENDING;
-import static uk.gov.moj.cpp.sandl.util.RestClient.getRequest;
-
 import uk.gov.moj.cpp.sandl.enricher.Enricher;
 import uk.gov.moj.cpp.sandl.parser.RotaXMLParser;
 import uk.gov.moj.cpp.sandl.parser.util.RotaPayload;
@@ -15,7 +12,6 @@ import uk.gov.moj.cpp.sandl.util.BlobArchiver;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.annotation.BindingName;
 import com.microsoft.azure.functions.annotation.BlobTrigger;
@@ -43,7 +39,7 @@ public class Handlesandlblobevent {
 
         context.getLogger().info("File parsed successfully now enriching it..");
 
-        final List<CourtSchedule> courtSchedules = enricher.enrich(records);
+        final List<CourtSchedule> courtSchedules = enricher.enrich(records, context);
 
         context.getLogger().info("Enriched it now, saving it to DB..");
 
@@ -55,12 +51,12 @@ public class Handlesandlblobevent {
 
         context.getLogger().info("Successfully archived the blob to archived blobs container");
 
-        calReferenceData(context);
+        //calReferenceData(context);
     }
 
-    public String calReferenceData(final ExecutionContext context) {
-        final String result = getRequest(TIMELINESS_SJP_CASE_PENDING, Maps.newHashMap(), context).asString();
-        return result;
-
-    }
+//    public String calReferenceData(final ExecutionContext context) {
+//        final String result = getRequest(TIMELINESS_SJP_CASE_PENDING, Maps.newHashMap(), context).asString();
+//        return result;
+//
+//    }
 }
