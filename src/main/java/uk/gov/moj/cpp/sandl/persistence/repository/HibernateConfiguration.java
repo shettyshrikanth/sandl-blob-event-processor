@@ -21,7 +21,6 @@ public class HibernateConfiguration {
                 .setProperty("hibernate.connection.autocommit", "true")
                 .setProperty("hibernate.show_sql", "false")
                 .setProperty("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect")
-                .setProperty("hibernate.show_sql", "false")
                 .setProperty("hibernate.hbm2ddl.auto", "update");
 
 

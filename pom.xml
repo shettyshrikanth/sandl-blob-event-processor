@@ -87,11 +87,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
-   <!--     <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <version>6.1.0.jre8</version>
-        </dependency> -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -132,6 +127,12 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>7.0.0.jre8</version>
         </dependency>
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.5.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>

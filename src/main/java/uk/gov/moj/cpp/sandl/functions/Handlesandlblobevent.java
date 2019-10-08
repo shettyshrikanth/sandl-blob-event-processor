@@ -12,6 +12,8 @@ import uk.gov.moj.cpp.sandl.util.BlobArchiver;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Singleton;
+
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.annotation.BindingName;
 import com.microsoft.azure.functions.annotation.BlobTrigger;
@@ -22,34 +24,42 @@ import com.microsoft.azure.functions.annotation.StorageAccount;
 public class Handlesandlblobevent {
 
     private final String storageUrl = getenv("sandl_storage_url");
+    private final String tpath = getenv("tpath");
+    private final String dev = getenv("tempvar");
     private final Enricher enricher = new Enricher();
+    private final String dev1 = "%tempvar%";
     private final CourtScheduleRepository repository = new CourtScheduleRepository();
     private final BlobArchiver archiver = new BlobArchiver();
 
     @FunctionName("Handlesandlblobevent")
     @StorageAccount("sandlstorage_STORAGE")
     public void run(
-            @BlobTrigger(name = "content", path = "sandlblobcontainer/{name}", dataType = "binary") byte[] content,
+            @BlobTrigger(name = "content", path = "%blobtriggerpath%", dataType = "binary") byte[] content,
             @BindingName("name") String name,
             final ExecutionContext context) {
 
-        context.getLogger().info("Storage Url :" + storageUrl);
+        try {
 
-        final Map<RotaPayload, Map<String, Map<String, Object>>> records = new RotaXMLParser().parse(content);
+            context.getLogger().info("Started processing  blob :" + name+"     "+tpath);
 
-        context.getLogger().info("File parsed successfully now enriching it..");
+            final Map<RotaPayload, Map<String, Map<String, Object>>> records = new RotaXMLParser().parse(content);
 
-        final List<CourtSchedule> courtSchedules = enricher.enrich(records, context);
+            context.getLogger().info("File parsed successfully now enriching it..");
 
-        context.getLogger().info("Enriched it now, saving it to DB..");
+            final List<CourtSchedule> courtSchedules = enricher.enrich(records, context);
 
-        repository.save(courtSchedules, context);
+            context.getLogger().info(String.format("Enriched %d , saving it to DB..", courtSchedules.size()));
 
-        context.getLogger().info("Saved successfully, now archiving it");
+            repository.save(courtSchedules, context);
 
-        archiver.archive(name, context);
+            context.getLogger().info("Saved successfully, now archiving it");
 
-        context.getLogger().info("Successfully archived the blob to archived blobs container");
+            archiver.archive("lmn/" + name, context);
+
+            context.getLogger().info("Successfully archived the blob to archived blobs container");
+        } catch (Exception e) {
+            context.getLogger().info("Exception :" + e.getMessage());
+        }
 
         //calReferenceData(context);
     }

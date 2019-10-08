@@ -34,7 +34,10 @@ public class Enricher {
         final Map<String, Map<String, Object>> schedules = records.get(RotaPayload.SCHEDULE);
         final Map<String, Map<String, Object>> courtListings = records.get(RotaPayload.COURT_LISTING);
 
+
         final List<CourtSchedule> scheduleList = new ArrayList<>();
+
+        context.getLogger().info(format("FOUND %d SCHEDULES", schedules.values().size()));
 
         for (final Map<String, Object> schedule : schedules.values()) {
             final String listingId = (String) schedule.get("courtListingProfile");
@@ -65,8 +68,7 @@ public class Enricher {
     }
 
     public String getOuCode(final String locationId, final String venueId, final ExecutionContext context) {
-
-        final Location location = new Location(locationId, venueId);
+  final Location location = new Location(locationId, venueId);
 
         String ouCode = cache.get(location);
 
@@ -76,6 +78,9 @@ public class Enricher {
         }
 
         try {
+
+
+
             context.getLogger().info(format("Calling reference data to fetch Court Centre for location : %s and venue : %s \n", locationId, venueId));
             final String params = format("&locationId=%d&venueId=%d", Integer.parseInt(locationId), Integer.parseInt(venueId));
 
