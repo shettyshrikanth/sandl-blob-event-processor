@@ -24,10 +24,7 @@ import com.microsoft.azure.functions.annotation.StorageAccount;
 public class Handlesandlblobevent {
 
     private final String storageUrl = getenv("sandl_storage_url");
-    private final String tpath = getenv("tpath");
-    private final String dev = getenv("tempvar");
     private final Enricher enricher = new Enricher();
-    private final String dev1 = "%tempvar%";
     private final CourtScheduleRepository repository = new CourtScheduleRepository();
     private final BlobArchiver archiver = new BlobArchiver();
 
@@ -40,7 +37,7 @@ public class Handlesandlblobevent {
 
         try {
 
-            context.getLogger().info("Started processing  blob :" + name+"     "+tpath);
+            context.getLogger().info("Started processing  blob :" + name);
 
             final Map<RotaPayload, Map<String, Map<String, Object>>> records = new RotaXMLParser().parse(content);
 

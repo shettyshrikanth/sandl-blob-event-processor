@@ -20,7 +20,7 @@ public class CourtScheduleRepository {
             "VALUES (?, ?, ?, ?, ?, ?, ?)";
     private Configuration configuration = new HibernateConfiguration().createHibernateConfiguration();
 
-    public boolean save(final List<CourtSchedule> records, final ExecutionContext context) {
+    public boolean saveOrm(final List<CourtSchedule> records, final ExecutionContext context) {
 
         try (SessionFactory sessionFactory = configuration.buildSessionFactory();
              Session session = sessionFactory.openSession()) {
@@ -45,27 +45,35 @@ public class CourtScheduleRepository {
 
         return true;
     }
-    public boolean saveJdbc(final List<CourtSchedule> records, final ExecutionContext context) {
+    public boolean save(final List<CourtSchedule> records, final ExecutionContext context) {
         final Connection connection = getConnection();
         try  {
             context.getLogger().info("Started saving court schedules\n");
 
-            final PreparedStatement query = connection.prepareStatement(INSERT_QRY);
+            final PreparedStatement stmt = connection.prepareStatement(INSERT_QRY);
+            int i = 1;
+            int counter = 1;
 
             for (final CourtSchedule courtSchedule : records) {
-                query.setString(1, courtSchedule.getId());
-                query.setString(2, courtSchedule.getOucode());
-                query.setObject(3, courtSchedule.getStartDate());
+                stmt.setString(1, courtSchedule.getId());
+                stmt.setString(2, courtSchedule.getOucode());
+                stmt.setObject(3, courtSchedule.getStartDate());
                 //   query.setObject(4, courtSchedule.getStartTime());
-                query.setObject(4, courtSchedule.getEndDate());
+                stmt.setObject(4, courtSchedule.getEndDate());
                 //   query.setObject(6, courtSchedule.getEndTime());
-                query.setInt(5, courtSchedule.getMaxSlots());
-                query.setBoolean(6, courtSchedule.getCanOverList());
-                query.setBoolean(7, courtSchedule.getWelsh());
-                query.executeUpdate();
-                query.clearParameters();
+                stmt.setInt(5, courtSchedule.getMaxSlots());
+                stmt.setBoolean(6, courtSchedule.getCanOverList());
+                stmt.setBoolean(7, courtSchedule.getWelsh());
+                stmt.addBatch();
+
+//                if(i++%1000==0){
+//                    stmt.executeBatch();
+//                    connection.commit();
+//                    System.out.println("Batch "+(counter++)+" executed successfully");
+//                }
             }
 
+            stmt.executeBatch();
             connection.commit();
             context.getLogger().info("Saved all court schedules successfully \n");
         } catch (Exception e) {
