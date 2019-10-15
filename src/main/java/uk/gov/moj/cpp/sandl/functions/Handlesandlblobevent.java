@@ -12,8 +12,6 @@ import uk.gov.moj.cpp.sandl.util.BlobArchiver;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Singleton;
-
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.annotation.BindingName;
 import com.microsoft.azure.functions.annotation.BlobTrigger;
@@ -24,6 +22,8 @@ import com.microsoft.azure.functions.annotation.StorageAccount;
 public class Handlesandlblobevent {
 
     private final String storageUrl = getenv("sandl_storage_url");
+    private final String skip = getenv("skip_files");
+    private final String orm = getenv("orm");
     private final Enricher enricher = new Enricher();
     private final CourtScheduleRepository repository = new CourtScheduleRepository();
     private final BlobArchiver archiver = new BlobArchiver();
@@ -39,21 +39,30 @@ public class Handlesandlblobevent {
 
             context.getLogger().info("Started processing  blob :" + name);
 
-            final Map<RotaPayload, Map<String, Map<String, Object>>> records = new RotaXMLParser().parse(content);
+            if (!skip.equals("true")) {
 
-            context.getLogger().info("File parsed successfully now enriching it..");
+                final Map<RotaPayload, Map<String, Map<String, Object>>> records = new RotaXMLParser().parse(content);
 
-            final List<CourtSchedule> courtSchedules = enricher.enrich(records, context);
+                context.getLogger().info("File parsed successfully now enriching it..");
 
-            context.getLogger().info(String.format("Enriched %d , saving it to DB..", courtSchedules.size()));
+                final List<CourtSchedule> courtSchedules = enricher.enrich(records, context);
 
-            repository.save(courtSchedules, context);
+                context.getLogger().info(String.format("Enriched %d , saving it to DB..", courtSchedules.size()));
 
-            context.getLogger().info("Saved successfully, now archiving it");
+                if (orm.equals("true")) {
+                    repository.saveOrm(courtSchedules, context);
+                } else {
+                    repository.saveJdbc(courtSchedules, context);
+                }
 
-            archiver.archive("lmn/" + name, context);
+                context.getLogger().info("Saved successfully, now archiving it");
 
-            context.getLogger().info("Successfully archived the blob to archived blobs container");
+                archiver.archive("lmn/" + name, context);
+
+                context.getLogger().info("Successfully archived the blob to archived blobs container");
+            } else {
+                context.getLogger().info("Skipped  processing  blob :  " + name);
+            }
         } catch (Exception e) {
             context.getLogger().info("Exception :" + e.getMessage());
         }

@@ -45,7 +45,13 @@ public class CourtScheduleRepository {
 
         return true;
     }
-    public boolean save(final List<CourtSchedule> records, final ExecutionContext context) {
+    public boolean saveJdbc(final List<CourtSchedule> records, final ExecutionContext context) throws  Exception{
+        context.getLogger().info("Available processors (cores): " +Runtime.getRuntime().availableProcessors());
+        context.getLogger().info("Free memory (bytes): " +Runtime.getRuntime().freeMemory());
+        long maxMemory = Runtime.getRuntime().maxMemory();
+        context.getLogger().info("Maximum memory (bytes): " + (maxMemory == Long.MAX_VALUE ? "no limit" : maxMemory));
+        context.getLogger().info("Total memory (bytes): " + Runtime.getRuntime().totalMemory());
+
         final Connection connection = getConnection();
         try  {
             context.getLogger().info("Started saving court schedules\n");
@@ -66,11 +72,9 @@ public class CourtScheduleRepository {
                 stmt.setBoolean(7, courtSchedule.getWelsh());
                 stmt.addBatch();
 
-//                if(i++%1000==0){
-//                    stmt.executeBatch();
-//                    connection.commit();
-//                    System.out.println("Batch "+(counter++)+" executed successfully");
-//                }
+                if(i++%1000==0){
+                    context.getLogger().info("Batch "+(counter++)+" executed successfully");
+                }
             }
 
             stmt.executeBatch();
@@ -84,6 +88,8 @@ public class CourtScheduleRepository {
             }
             context.getLogger().log(Level.SEVERE, "Exception during save to DB ", e);
             return false;
+        } finally {
+            connection.close();
         }
 
         return true;
