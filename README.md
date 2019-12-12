@@ -19,7 +19,7 @@ The `pom.xml` dependencies : -
 
  * Build project : `mvn clean install prepare-package`
  * Deploy project : `mvn azure-functions:deploy` (you need to login before you run this command)
- * Add new function : `mvn azure-functions:run`
+ * Add new function : `mvn azure-functions:add
 
 # Login to Azure portal
 
